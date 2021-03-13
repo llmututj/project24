@@ -608,39 +608,7 @@ CleanPrintf() {
   printf "$@"
 }
 
-#PrintLogo() {
-#  # Screen size checks
-#  if [ "$1" = "pico" ]; then
-# //    CleanEcho "p${padd_text} ${pico_status}"
-# //  elif [ "$1" = "nano" ]; then
-#  //   CleanEcho "n${padd_text} ${mini_status_}"
-#  // elif [ "$1" = "micro" ]; then
- # //   CleanEcho "µ${padd_text}     ${mini_status_}"
- # //   CleanEcho ""
- # // elif [ "$1" = "mini" ]; then
- # //   CleanEcho "${padd_text}${dim_text}mini${reset_text}  ${mini_status_}"
- # //   CleanEcho ""
- # // elif [ "$1" = "tiny" ]; then
-#  //   CleanEcho "${padd_text}${dim_text}tiny${reset_text}   Pi-hole® ${core_version_heatmap}v${core_version}${reset_text}, Web ${web_version_heatmap}v${web_version}${reset_text}, FTL ${ftl_version_heatmap}v${ftl_version}${reset_text}"
-#  //   CleanPrintf "           PADD ${padd_version_heatmap}${padd_version}${reset_text} ${tiny_status_}${reset_text}\e[0K\\n"
-#  // elif [ "$1" = "slim" ]; then
-#  //   CleanEcho "${padd_text}${dim_text}slim${reset_text}   ${full_status_}"
-#  //   CleanEcho ""
-#  // # For the next two, use printf to make sure spaces aren't collapsed
-#  // elif [[ "$1" = "regular" || "$1" = "slim" ]]; then
-#  //   CleanPrintf "${padd_logo_1}\e[0K\\n"
-#   //  CleanPrintf "${padd_logo_2}Pi-hole® ${core_version_heatmap}v${core_version}${reset_text}, Web ${web_version_heatmap}v${web_version}${reset_text}, FTL ${ftl_version_heatmap}v${ftl_version}${reset_text}\e[0K\\n"
-#   //  CleanPrintf "${padd_logo_3}PADD ${padd_version_heatmap}${padd_version}${reset_text}${full_status_}${reset_text}\e[0K\\n"
-#   //  CleanEcho ""
-#   //# normal or not defined
-#  // else
-#   //  CleanPrintf "${padd_logo_retro_1}\e[0K\\n"
-#    // CleanPrintf "${padd_logo_retro_2}   Pi-hole® ${core_version_heatmap}v${core_version}${reset_text}, Web ${web_version_heatmap}v${web_version}${reset_text}, FTL ${ftl_version_heatmap}v${ftl_version}${reset_text}, PADD ${padd_version_heatmap}${padd_version}${reset_text}\e[0K\\n"
-#    // CleanPrintf "${padd_logo_retro_3}   ${pihole_check_box} Core  ${ftl_check_box} FTL   ${mega_status}${reset_text}\e[0K\\n"
 
-#    // CleanEcho ""
-#  // fi
-# //}
 
 PrintNetworkInformation() {
   if [ "$1" = "pico" ]; then
@@ -1015,7 +983,7 @@ OutputJSON() {
 
 StartupRoutine(){
   if [ "$1" = "pico" ] || [ "$1" = "nano" ] || [ "$1" = "micro" ]; then
- #  // PrintLogo "$1"
+ 
     echo -e "START-UP ==========="
     echo -e "Checking connection."
     CheckConnectivity "$1"
@@ -1050,7 +1018,7 @@ StartupRoutine(){
     echo -ne " [■■■■■■■■■■] 100%\\n"
 
   elif [ "$1" = "mini" ]; then
-  # // PrintLogo "$1"
+  
     echo "START UP ====================="
     echo "Checking connectivity."
     CheckConnectivity "$1"
@@ -1152,7 +1120,7 @@ NormalPADD() {
     tput cup 0 0
 
     # Output everything to the screen
- ## //  PrintLogo ${padd_size}
+
     PrintPiholeInformation ${padd_size}
     PrintPiholeStats ${padd_size}
     PrintNetworkInformation ${padd_size}
