@@ -61,7 +61,7 @@ pico_status_unknown="${check_box_question} Stat. Unk."
 mini_status_ok="${check_box_good} System OK"
 mini_status_update="${check_box_info} Update avail."
 mini_status_hot="${check_box_bad} System is hot!"
-mini_status_off="${check_box_bad} sinkhole off!"
+mini_status_off="${check_box_bad} Pi-hole off!"
 mini_status_ftl_down="${check_box_info} FTL down!"
 mini_status_dns_down="${check_box_bad} DNS off!"
 mini_status_unknown="${check_box_question} Status unknown"
@@ -70,7 +70,7 @@ mini_status_unknown="${check_box_question} Status unknown"
 full_status_ok="${check_box_good} System is healthy."
 full_status_update="${check_box_info} Updates are available."
 full_status_hot="${check_box_bad} System is hot!"
-full_status_off="${check_box_bad} sinkhole is offline"
+full_status_off="${check_box_bad} Pi-hole is offline"
 full_status_ftl_down="${check_box_info} FTL is down!"
 full_status_dns_down="${check_box_bad} DNS is off!"
 full_status_unknown="${check_box_question} Status unknown!"
@@ -79,16 +79,16 @@ full_status_unknown="${check_box_question} Status unknown!"
 mega_status_ok="${check_box_good} Your system is healthy."
 mega_status_update="${check_box_info} Updates are available."
 mega_status_hot="${check_box_bad} Your system is hot!"
-mega_status_off="${check_box_bad} sinkhole is off-line."
+mega_status_off="${check_box_bad} Pi-hole is off-line."
 mega_status_ftl_down="${check_box_info} FTLDNS service is not running."
-mega_status_dns_down="${check_box_bad} sinkhole's DNS server is off!"
-mega_status_unknown="${check_box_question} Unable to determine sinkhole status."
+mega_status_dns_down="${check_box_bad} Pi-hole's DNS server is off!"
+mega_status_unknown="${check_box_question} Unable to determine Pi-hole status."
 
 # TINY STATUS
 tiny_status_ok="${check_box_good} System is healthy."
 tiny_status_update="${check_box_info} Updates are available."
 tiny_status_hot="${check_box_bad} System is hot!"
-tiny_status_off="${check_box_bad} sinkhole is offline"
+tiny_status_off="${check_box_bad} Pi-hole is offline"
 tiny_status_ftl_down="${check_box_info} FTL is down!"
 tiny_status_dns_down="${check_box_bad} DNS is off!"
 tiny_status_unknown="${check_box_question} Status unknown!"
@@ -608,7 +608,39 @@ CleanPrintf() {
   printf "$@"
 }
 
+PrintLogo() {
+  # Screen size checks
+  if [ "$1" = "pico" ]; then
+    CleanEcho "p${padd_text} ${pico_status}"
+  elif [ "$1" = "nano" ]; then
+    CleanEcho "n${padd_text} ${mini_status_}"
+  elif [ "$1" = "micro" ]; then
+    CleanEcho "µ${padd_text}     ${mini_status_}"
+    CleanEcho ""
+  elif [ "$1" = "mini" ]; then
+    CleanEcho "${padd_text}${dim_text}mini${reset_text}  ${mini_status_}"
+    CleanEcho ""
+  elif [ "$1" = "tiny" ]; then
+    CleanEcho "${padd_text}${dim_text}tiny${reset_text}   Pi-hole® ${core_version_heatmap}v${core_version}${reset_text}, Web ${web_version_heatmap}v${web_version}${reset_text}, FTL ${ftl_version_heatmap}v${ftl_version}${reset_text}"
+    CleanPrintf "           PADD ${padd_version_heatmap}${padd_version}${reset_text} ${tiny_status_}${reset_text}\e[0K\\n"
+  elif [ "$1" = "slim" ]; then
+    CleanEcho "${padd_text}${dim_text}slim${reset_text}   ${full_status_}"
+    CleanEcho ""
+  # For the next two, use printf to make sure spaces aren't collapsed
+  elif [[ "$1" = "regular" || "$1" = "slim" ]]; then
+    CleanPrintf "${padd_logo_1}\e[0K\\n"
+    CleanPrintf "${padd_logo_2}Pi-hole® ${core_version_heatmap}v${core_version}${reset_text}, Web ${web_version_heatmap}v${web_version}${reset_text}, FTL ${ftl_version_heatmap}v${ftl_version}${reset_text}\e[0K\\n"
+    CleanPrintf "${padd_logo_3}PADD ${padd_version_heatmap}${padd_version}${reset_text}${full_status_}${reset_text}\e[0K\\n"
+    CleanEcho ""
+  # normal or not defined
+  else
+    CleanPrintf "${padd_logo_retro_1}\e[0K\\n"
+    CleanPrintf "${padd_logo_retro_2}   Pi-hole® ${core_version_heatmap}v${core_version}${reset_text}, Web ${web_version_heatmap}v${web_version}${reset_text}, FTL ${ftl_version_heatmap}v${ftl_version}${reset_text}, PADD ${padd_version_heatmap}${padd_version}${reset_text}\e[0K\\n"
+    CleanPrintf "${padd_logo_retro_3}   ${pihole_check_box} Core  ${ftl_check_box} FTL   ${mega_status}${reset_text}\e[0K\\n"
 
+    CleanEcho ""
+  fi
+}
 
 PrintNetworkInformation() {
   if [ "$1" = "pico" ]; then
@@ -683,7 +715,7 @@ PrintPiholeInformation() {
     CleanEcho "${bold_text}PI-HOLE ================================${reset_text}"
     CleanPrintf " %-9s${pihole_heatmap}%-10s${reset_text} %-9s${ftl_heatmap}%-10s${reset_text}\e[0K\\n" "Status:" "${pihole_status}" "FTL:" "${ftl_status}"
   elif [ "$1" = "tiny" ]; then
-    CleanEcho "${bold_text}PI-HOLE ============================================${reset_text}"
+    CleanEcho "${bold_text}sinkhole ============================================${reset_text}"
     CleanPrintf " %-10s${pihole_heatmap}%-16s${reset_text} %-8s${ftl_heatmap}%-10s${reset_text}\e[0K\\n" "Status:" "${pihole_status}" "FTL:" "${ftl_status}"
   elif [[ "$1" = "regular" || "$1" = "slim" ]]; then
     CleanEcho "${bold_text}PI-HOLE ===================================================${reset_text}"
@@ -705,13 +737,13 @@ PrintPiholeStats() {
   elif [ "$1" = "micro" ]; then
     CleanEcho "${bold_text}STATS ========================${reset_text}"
     CleanEcho " Blckng:  ${domains_being_blocked} domains"
-    CleanEcho " sinkholed: [${ads_blocked_bar}] ${ads_percentage_today}%"
-    CleanEcho " sinkholed: ${ads_blocked_today} / ${dns_queries_today}"
+    CleanEcho " Piholed: [${ads_blocked_bar}] ${ads_percentage_today}%"
+    CleanEcho " Piholed: ${ads_blocked_today} / ${dns_queries_today}"
   elif [ "$1" = "mini" ]; then
     CleanEcho "${bold_text}STATS ==================================${reset_text}"
     CleanPrintf " %-9s%-29s\e[0K\\n" "Blckng:" "${domains_being_blocked} domains"
-    CleanPrintf " %-9s[%-20s] %-5s\e[0K\\n" "sinkholed:" "${ads_blocked_bar}" "${ads_percentage_today}%"
-    CleanPrintf " %-9s%-29s\e[0K\\n" "sinkholed:" "${ads_blocked_today} out of ${dns_queries_today}"
+    CleanPrintf " %-9s[%-20s] %-5s\e[0K\\n" "Piholed:" "${ads_blocked_bar}" "${ads_percentage_today}%"
+    CleanPrintf " %-9s%-29s\e[0K\\n" "Piholed:" "${ads_blocked_today} out of ${dns_queries_today}"
     CleanPrintf " %-9s%-29s\e[0K\\n" "Latest:" "${latest_blocked}"
     if [[ "${DHCP_ACTIVE}" != "true" ]]; then
       CleanPrintf " %-9s%-29s\\n" "Top Ad:" "${top_blocked}"
@@ -740,7 +772,7 @@ PrintPiholeStats() {
     fi
   else
     CleanEcho "${bold_text}STATS =========================================================================${reset_text}"
-    CleanPrintf " %-10s%-19s %-10s[%-40s] %-5s\e[0K\\n" "Blocking:" "${domains_being_blocked} domains" "sinkholed:" "${ads_blocked_bar}" "${ads_percentage_today}%"
+    CleanPrintf " %-10s%-19s %-10s[%-40s] %-5s\e[0K\\n" "Blocking:" "${domains_being_blocked} domains" "Piholed:" "${ads_blocked_bar}" "${ads_percentage_today}%"
     CleanPrintf " %-10s%-30s%-29s\e[0K\\n" "Clients:" "${clients}" " ${ads_blocked_today} out of ${dns_queries_today} queries"
     CleanPrintf " %-10s%-39s\e[0K\\n" "Latest:" "${latest_blocked}"
     CleanPrintf " %-10s%-39s\e[0K\\n" "Top Ad:" "${top_blocked}"
@@ -983,7 +1015,7 @@ OutputJSON() {
 
 StartupRoutine(){
   if [ "$1" = "pico" ] || [ "$1" = "nano" ] || [ "$1" = "micro" ]; then
- 
+    PrintLogo "$1"
     echo -e "START-UP ==========="
     echo -e "Checking connection."
     CheckConnectivity "$1"
@@ -1018,7 +1050,7 @@ StartupRoutine(){
     echo -ne " [■■■■■■■■■■] 100%\\n"
 
   elif [ "$1" = "mini" ]; then
-  
+    PrintLogo "$1"
     echo "START UP ====================="
     echo "Checking connectivity."
     CheckConnectivity "$1"
@@ -1120,7 +1152,7 @@ NormalPADD() {
     tput cup 0 0
 
     # Output everything to the screen
-
+    PrintLogo ${padd_size}
     PrintPiholeInformation ${padd_size}
     PrintPiholeStats ${padd_size}
     PrintNetworkInformation ${padd_size}
